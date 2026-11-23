@@ -36,25 +36,29 @@ var SnakeGame = function(containerId){
         }
             
         switch(keyCode){
-            case 37:
+            case 68:
+            case 39:
                 if (this.Snake.direction != 'right'){
                     this.Snake.moveLeft();
                 }
                 break;
                         
-            case 38:
+            case 83:
+            case 40:
                 if (this.Snake.direction != 'down'){
                     this.Snake.moveUp();
                 }
                 break; 
           
-            case 39:
+            case 65:
+            case 37:
                 if (this.Snake.direction != 'left'){
                     this.Snake.moveRight();
                 }
                 break; 
         
-            case 40:
+            case 87:
+            case 38:
                 if (this.Snake.direction != 'up'){
                     this.Snake.moveDown();
                 }
@@ -232,7 +236,7 @@ var SnakeGame = function(containerId){
             if (self.Snake.body.some(self.Snake.isPieceOfTail)) {
                 this.draw();
             } else {
-                self.context.fillStyle = '#f00';
+                self.context.fillStyle = '#0f0';
                 self.context.fillRect(this.randomPoint[0], this.randomPoint[1], self.size, self.size);
             }
         },
@@ -243,6 +247,16 @@ var SnakeGame = function(containerId){
             ];
         }
     };
+
+    this.getSmoothRGB = function(time, speed = 0.001){
+        // R, G, B가 서로 다른 타이밍에 변하도록 위상(Phase) 차이를 둡니다.
+        // 0, 2, 4는 위상 오프셋 값입니다.
+        const r = Math.round(Math.sin(speed * time + 0) * 127 + 128);
+        const g = Math.round(Math.sin(speed * time + 2) * 127 + 128);
+        const b = Math.round(Math.sin(speed * time + 4) * 127 + 128);
+
+        return `rgb(${r}, ${g}, ${b})`;
+    }
         
     /**
      * The snake itself.
@@ -273,7 +287,7 @@ var SnakeGame = function(containerId){
             }
                 
             self.Snake.body.push([self.Snake.position.x, self.Snake.position.y]);
-            self.context.fillStyle = '#00f';
+            self.context.fillStyle = self.getSmoothRGB(Date.now());
             self.context.fillRect(self.Snake.position.x, self.Snake.position.y, self.size, self.size);
                 
             if (self.Snake.body.length > self.Snake.length) {
@@ -322,7 +336,7 @@ var SnakeGame = function(containerId){
         bornAgain: function() {
             self.Snake.body = [];
             self.Snake.direction = 'right';
-            self.Snake.length = 3;
+            self.Snake.length = 50;
         }
     };
     
